@@ -139,7 +139,7 @@ def printTable(table):
             print("------------------------")
             for loc in table.keys():
                 print("[ {} ]".format(loc), end=" ")
-            print("\n------------------------\n")
+            print("\n------------------------\n\n\n")
 
 def moveArmTo(to_location):
     if(Arm["position"] is not None):
@@ -179,15 +179,43 @@ if(__name__ == "__main__"):
     buildBlocksFromBluePrint(i_table)
     buildBlocksFromBluePrint(o_table)
 
+# print(i_table[1])
+
+
+def unstack(block):
+    
+
+def pickup(location):
+    pass
 
 # Methods for actions
-def putDown(block, location):
+
+# preConditions: ArmHasBlock(block), ArmIsOn()
+def getReadyToStack(block, stack_location):
     global Arm, i_table
-    # getReadyToPutDown()
-    Arm["position"] = 1
+    #ArmHasBlock(block)
+    if(Arm["block"] == block.label):
+        pass
+    else:
+        # Unstack(block) / pickup(block)
+        if(len(i_table[block.position]) > 1):
+            unstack(block.parent)
+        else:
+            pickup(block.location)
+    #ArmIsOn(stack_location)    
+    # Check if arm is on right position to stack
+    if(Arm["position"] == stack_location):
+        pass
+    else:
+        Arm["position"] = stack_location
+
+
+
+def stack(block, location):
+    global Arm, i_table
+    getReadyToStack(block, location)
     if Arm["position"] == location:
         i_table[location].append(block)
-    # buildBlocksFromBluePrint(i_table)
 
 
 printTable(i_table)
@@ -197,11 +225,8 @@ printTable(i_table)
 
 for location in [2, 3, 4]:
     blocks_in_location = i_table[location]
-    blocks_in_location.reverse()
-    # print(blocks_in_location)
-    for block in blocks_in_location:
-        # print(block.label)
-        putDown(block, 1)
+    for block in blocks_in_location[::-1]:
+        stack(block, 1)
 
 
 printTable(i_table)
