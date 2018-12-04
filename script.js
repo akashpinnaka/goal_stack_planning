@@ -136,8 +136,8 @@ console.log(final_slots)
 // final_top= JSON.parse('{"A":"clear","B":"A","C":"B","D":"C","E":"D","F":"E","G":"F","H":"G","I":"H","J":"I","K":"clear","L":"clear","M":"clear","N":"J"}')
 
 
-init_on = JSON.parse('{"A":"table","B":"A","K":"B","L":"K","M":"L","N":"M","D":"C","F":"E","G":"F","I":"H","H":"table","C":"table","E":"table","J":"I"}')
-init_loc = JSON.parse('{"A":"1","B":"1","C":"2","D":"2","E":"3","F":"3","G":"3","H":"4","I":"4","J":"4","K":"1","L":"1","M":"1","N":"1"}')
+init_on = JSON.parse('{"A":"table","D":"A","E":"D","F":"E","B":"C","I":"G","M":"I","K":"M","L":"K","J":"H","C":"table","G":"table","H":"table","N":"J"}')
+init_loc = JSON.parse('{"A":"1","B":"2","C":"2","D":"1","E":"1","F":"1","G":"3","H":"4","I":"3","J":"4","K":"3","L":"3","M":"3","N":"4"}')
 init_top = JSON.parse('{"A":"B","B":"K","K":"L","L":"M","M":"N","C":"D","E":"F","F":"G","H":"I","J":"clear","G":"clear","D":"clear","I":"J","N":"clear"}')
 
 final_on= JSON.parse('{"A":"B","B":"C","C":"F","F":"E","E":"D","D":"G","G":"H","H":"I","I":"J","J":"N","K":"table","L":"table","M":"table","N":"table"}')
