@@ -40,6 +40,14 @@ class Block:
 
     @property
     def parent(self):
+        # global i_table
+        # size = len(i_table[self.__pos__])
+        # print("size {}, position {}".format(size, self.__pos__))
+        # for index, block in i_table[self.__pos__]:
+        #     if(block.label == self.label):
+        #         if(index != 0 or index != size - 1):
+        #             return i_table[self.__pos__][index]
+
         return self.__parent__
 
     @property
@@ -103,7 +111,7 @@ def Above(x, y):
 def Hold(x):
     global Arm
     if(Arm is not None and x is not None):
-        return Arm.label == x.label
+        return Arm["block"] == x.label
     else:
         return False
 
@@ -121,8 +129,11 @@ def getOnTableBlockForLocation(pos, state):
             return blk
 
 def topBlockAtLoc(location, state):
-    last_element_index = len(state[location])-1
-    return state[location][last_element_index]
+    if(len(state[location]) > 0):
+        last_element_index = len(state[location])-1
+        return state[location][last_element_index]
+    else:
+        return None
 
 def printTable(table):
     index = max([len(table[loc]) for loc in table.keys()])
@@ -182,8 +193,25 @@ if(__name__ == "__main__"):
 # print(i_table[1])
 
 
+def getReadyToUnStack(block):
+    pass
+
 def unstack(block):
-    
+    global Arm, i_table, tmp_location
+    getReadyToUnStack(block)
+    top_block_at_block_location = topBlockAtLoc(block.position, i_table)
+    if(block != None and top_block_at_block_location == block):
+        tmp = block
+        i_table[block.position].pop()
+        if(not Table(block)):
+            top_block_at_block_location.child.parent = None
+        top_block_at_block_location.child = None
+    else:
+        # stack(block.parent, tmp_location)
+        pass
+
+
+
 
 def pickup(location):
     pass
@@ -198,10 +226,10 @@ def getReadyToStack(block, stack_location):
         pass
     else:
         # Unstack(block) / pickup(block)
-        if(len(i_table[block.position]) > 1):
-            unstack(block.parent)
+        if(topBlockAtLoc(block.position, i_table) == block):
+            unstack(block)
         else:
-            pickup(block.location)
+            unstack(block.parent)
     #ArmIsOn(stack_location)    
     # Check if arm is on right position to stack
     if(Arm["position"] == stack_location):
@@ -214,10 +242,16 @@ def getReadyToStack(block, stack_location):
 def stack(block, location):
     global Arm, i_table
     getReadyToStack(block, location)
-    if Arm["position"] == location:
+    if topBlockAtLoc(location, i_table) is not None:
+        current_top_block = topBlockAtLoc(location, i_table)
+        current_top_block.parent = block
+        block.child = current_top_block
+        block.position = location
         i_table[location].append(block)
 
 
+
+printTable(o_table)
 printTable(i_table)
 
 
@@ -227,6 +261,67 @@ for location in [2, 3, 4]:
     blocks_in_location = i_table[location]
     for block in blocks_in_location[::-1]:
         stack(block, 1)
+        printTable(i_table)
 
 
-printTable(i_table)
+
+global current_location
+current_location = 3
+global tmp_location
+tmp_location = 2
+
+def unstackRecursive(block, target_block):
+    global i_table
+    if(block is not None):
+        unstackRecursive(block.parent, target_block)
+        if(block == target_block):
+            if block in i_table[block.position]:
+                block.position = current_location
+                i_table[current_location].append(block)
+                if(len(i_table[current_location]) == 0):
+                    pass
+                else:
+                    top_block_in_current_loc = topBlockAtLoc(current_location, i_table)
+                    top_block_in_current_loc.parent = block
+                    block.child = top_block_in_current_loc
+
+        else:
+            block.position = tmp_location
+            i_table[tmp_location].append(block)
+            if(len(i_table[tmp_location]) == 0):
+                pass
+            else:
+                top_block_in_tmp_loc = topBlockAtLoc(tmp_location, i_table)
+                top_block_in_tmp_loc.parent = block
+                block.child = top_block_in_tmp_loc
+        if block.child != None:
+            block.child.parent = None
+        block.child = None
+        print(block.label, end="****\n")
+        # if block in i_table[block.position]:
+        block_1 = getBlock(block.label, i_table)
+        print("block {} position {}".format(block.label,block.position))
+        print("block_1 {} position {}".format(block_1.label,block_1.position))
+        parent = block.parent.label if block.parent else None
+        print("block {} and parent {}".format(block.label, parent))
+        try:
+            i_table[block_1.position].remove(block)
+        except:
+            pass
+        printTable(i_table)
+
+
+for block in o_table[current_location]:
+    unstackRecursive(getBlock(block.label, i_table), getBlock(block.label, i_table))
+
+
+
+current_location = 3
+tmp_location = 4
+
+for block in o_table[current_location]:
+    print(getBlock(block.label, i_table).position)
+    # unstackRecursive(getBlock(block.label, i_table), getBlock(block.label, i_table))
+
+printTable(o_table)
+
