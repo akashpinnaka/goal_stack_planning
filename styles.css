@@ -50,6 +50,10 @@ h1#take_data_wrapper #take_data {
 	padding: .3em 2em;
 }
 
+button {
+	padding :.5em 2em;
+}
+
 #results {
 	background-color: #f7f4f6;
 	padding: 1em 2em;
@@ -63,4 +67,12 @@ h1#take_data_wrapper #take_data {
 #results h4 {
 	color: #435343;
 	padding: .3em 0;
+}
+
+
+#presentation {
+	position: absolute;
+	width: 100%;
+	top: 0;
+	display: none;
 }
