@@ -44,125 +44,56 @@ var i_e = 0;
 
 var temp_object = "__object"
 
-var init_slots = []
-var final_slots = []
-
-// from UI
-// var first_location_input = []
-// var second_location_input = []
-// var third_location_input = []
-// var fourth_location_input = []
-// var first_location_output = []
-// var second_location_output = []
-// var third_location_output = []
-// var fourth_location_output = []
-// $("#take_data").on('click', function() {
-//   first_location_input = $("#init-location-1").val().split(",");
-//   second_location_input = $("#init-location-2").val().split(",");
-//   third_location_input = $("#init-location-3").val().split(",");
-//   fourth_location_input = $("#init-location-4").val().split(",");
-//   first_location_output = $("#final-location-1").val().split(",");
-//   second_location_output = $("#final-location-2").val().split(",");
-//   third_location_output = $("#final-location-3").val().split(",");
-//   fourth_location_output = $("#final-location-4").val().split(",");
-//   init_slots.push(first_location_input, second_location_input, third_location_input,fourth_location_input)
-//   final_slots.push(first_location_output, second_location_output, third_location_output, fourth_location_output)
-
-//   for(var i = 0; i < init_slots.length; i++) {
-//     for(var j = 0; j < i.length; j++) {
-//       init_loc[j] = i
-//     }
-//   }
-
-//   console.log(init_slots)
-//   console.log(init_loc)
-
-//   console.log("***************************************")
-//   console.log(init_on)
-//   console.log("***************************************")
-
-//   for(var i = 0; i < init_slots.length; i++) {
-//     for(var j = 0; j < i.length; j++) {
-//       if(j == 0) {
-//         init_on[j] = "table"
-//       }
-//       else {
-//         init_on[j] = i[j-1]
-//       }
-//     }
-//   }
-
-//   for(var i = 0; i < init_slots.length; i++) {
-//     for(var j = 0; j < i.length; j++) {
-//       if(j == i.length - 1) {
-//         init_top[j] = "clear"
-//       }
-//       else {
-//         init_top[j] = i[j+1]
-//       }
-//     }
-//   }
-// });
-
-//End of from UI
+var init_slots = [["A", "D", "E", "I", "M"], ["B", "F", "G"], ["C", "H", "K"], ["J", "L", "N"]];
+var final_slots = [["G", "H", "I"], ["C", "B", "K", "J"], ["A", "D", "L", "M"], ["E", "F", "N"]];
 
 
-// init_slots  = JSON.parse('[["A","B","C","D","E","F","G","H","I","J"],["K"],["L"],["M","N"]]')
-// final_slots = JSON.parse('[["N","J","I","H","G","F","E","D","C","B","A"],["M"],["L"],["K"]]')
-
-// Object.keys(init_on).forEach(function(_key ){
-//   let index = init_slots.indexOf(key)
-//   if(index > 0){
-
-//     init_on[key] = init_slots[]
-
-//   }else if(init_slots.indexOf(key) == 0){
-
-//   }else if(init_slots.indexOf(key) == init_slots.length-1){
-
-//   }
-
-// })
 
 console.log(init_slots)
 console.log(final_slots)
 
-// init_on = JSON.parse('{"A":"table","B":"A","C":"B","D":"C","E":"D","F":"E","G":"F","H":"G","I":"H","J":"I","K":"table","L":"table","M":"table","N":"M"}')
-// init_loc = JSON.parse('{"A":"1","B":"1","C":"1","D":"1","E":"1","F":"1","G":"1","H":"1","I":"1","J":"1","K":"2","L":"3","M":"4","N":"4"}')
-// init_top = JSON.parse('{"A":"B","B":"C","C":"D","D":"E","E":"F","F":"G","G":"H","H":"I","I":"J","J":"clear","K":"clear","L":"clear","M":"N","N":"clear"}')
+function getLocationOf(label, ref){
+  found = false
+  let details = {slot:"", position : false , on : false, top: false}
+  for(slot in ref){
+      let blockCount = ref[slot].length-1
+      let blocks  = ref[slot]
+      for(pos in blocks ){
+          if(blocks[pos]== label){
+              details.slot = Number(slot)+1
+              details.position = pos
+              if(blockCount == pos && pos !=0){
+                  details.top = "clear"
+                  details.on = blocks[Number(pos) - 1] || false
+              }else if(pos == 0){
+                  details.on = "table"
+                  details.top = blocks[Number(pos) + 1] || "clear"
+              }else{
+                  details.on = blocks[Number(pos)-1] || false
+                  details.top = blocks[Number(pos)+1] || false
+              }
+              return details;
+          }
+      }
+  }
+}
 
-// final_on= JSON.parse('{"A":"B","B":"C","C":"D","D":"E","E":"F","F":"G","G":"H","H":"I","I":"J","J":"N","K":"table","L":"table","M":"table","N":"table"}')
-// final_loc= JSON.parse('{"A":"1","B":"1","C":"1","D":"1","E":"1","F":"1","G":"1","H":"1","I":"1","J":"1","K":"4","L":"3","M":"2","N":"1"}')
-// final_top= JSON.parse('{"A":"clear","B":"A","C":"B","D":"C","E":"D","F":"E","G":"F","H":"G","I":"H","J":"I","K":"clear","L":"clear","M":"clear","N":"J"}')
+Object.keys(init_on).forEach((block)=>{
+    let blockDetails = getLocationOf(block, init_slots)
+    init_on[block] = blockDetails.on
+    init_top[block] = blockDetails.top
+    init_loc[block] = blockDetails.slot
+})
+
+Object.keys(final_on).forEach((block)=>{
+    let blockDetails = getLocationOf(block, final_slots)
+    final_on[block] = blockDetails.on
+    final_top[block] = blockDetails.top
+    final_loc[block] = blockDetails.slot
+})
 
 
-init_on = JSON.parse('{"A":"table","D":"A","E":"D","F":"E","B":"C","I":"G","M":"I","K":"M","L":"K","J":"H","C":"table","G":"table","H":"table","N":"J"}')
-init_loc = JSON.parse('{"A":"1","B":"2","C":"2","D":"1","E":"1","F":"1","G":"3","H":"4","I":"3","J":"4","K":"3","L":"3","M":"3","N":"4"}')
-init_top = JSON.parse('{"A":"B","B":"K","K":"L","L":"M","M":"N","C":"D","E":"F","F":"G","H":"I","J":"clear","G":"clear","D":"clear","I":"J","N":"clear"}')
-
-final_on= JSON.parse('{"A":"B","B":"C","C":"F","F":"E","E":"D","D":"G","G":"H","H":"I","I":"J","J":"N","K":"table","L":"table","M":"table","N":"table"}')
-final_loc= JSON.parse('{"A":"1","B":"1","C":"1","F":"1","E":"1","D":"1","G":"1","H":"1","I":"1","J":"1","K":"4","L":"3","M":"2","N":"1"}')
-final_top= JSON.parse('{"A":"clear","B":"A","C":"B","F":"C","E":"F","D":"E","G":"D","H":"G","I":"H","J":"I","K":"clear","L":"clear","M":"clear","N":"J"}')
-
-$(document).ready(function () {  
-  var a = $("#init_loc_table option:selected").val()
-  $("#init").append('<div  class="col-lg-3" id="init_loc1"> LOCATION ' + 1 + ' <br><br></div>')  
-  var a = $("#final_loc_table option:selected ").val()
-  $("#final").append('<div class="col-lg-3" id="final_loc1"> LOCATION ' + 1 + ' <br><br></div>')  
-  $("#init_loc_table").change(function () {
-    var a = $("#init_loc_table option:selected ").val()    
-    if (!($('#init_loc' + a + '').length)) {
-      $("#init").append('   <div class="col-lg-3" id="init_loc' + a + '"> LOCATION ' + a + ' <br><br></div>')
-    }
-});
-  
-  $("#final_loc_table").change(function () {
-    var a = $("#final_loc_table option:selected ").val()    
-    if (!($('#final_loc' + a + '').length))
-      $("#final").append(' <div  class="col-lg-3" id="final_loc' + a + '"> LOCATION ' + a + ' <br><br></div>')
-
-  });
-
+$(document).ready(function () {
   function count_blocks_at_loc_table(variable1, variable2, location) {
     var count = 0;
     Object.keys(variable1).forEach(function (key) {
@@ -182,149 +113,32 @@ $(document).ready(function () {
     return count
   }
 
-  $("#init_table_click").click(function () {    
-    var a = $("#init_table ").val()
-    var loc = $("#init_loc_table option:selected ").val()    
-    if (init_on[a])
-      alert("You cannot insert the BLOCK(" + a + ") on Table it is already on BLOCK(" + init_on[a] + ")")    
-    else if (count_blocks_at_loc_table(init_on, init_loc, loc))
-      alert("There is already a block on table at this location you cannot insert more blocks on table")
-    else {
-      if (count_blocks_on_table(init_on) >= 4)
-        alert("You cannot insert the BLOCK(" + a + ") on Table there are already 4 of the blocks on table")
-      else {
-        init_on[a] = "table"
-        init_loc[a] = loc
-        init_slots[loc-1].push(a)
-        $("#init_loc" + loc).append("<span style='padding-left:20%;font-weight:normal'>TABLE(" + a + ")</span><br><br>")
-      }
-    }
-  });
-
-  $("#final_table_click").click(function () {    
-    var a = $("#final_table ").val()
-    var loc = $("#final_loc_table option:selected ").val()    
-    if (final_on[a])
-      alert("You cannot insert the BLOCK(" + a + ") on Table it is already on BLOCK(" + final_on[a] + ")")
-
-    else if (count_blocks_at_loc_table(final_on, final_loc, loc))
-      alert("There is already a block on table at this location you cannot insert more blocks on table")
-
-
-    else {
-      if (count_blocks_on_table(final_on) >= 4)
-        alert("You cannot insert the BLOCK(" + a + ") on Table there are already 4 of the blocks on table")
-
-      
-      else {
-        final_on[a] = "table"
-        final_loc[a] = loc
-        final_slots[loc-1].push(a)
-        $("#final_loc" + loc).append("<span style='padding-left:20%;font-weight:normal'>TABLE(" + a + ")</span><br><br>")
-      }
-    }
-
-  });
-
-  $("#init_on_click").click(function () {
-
-    var a = $("#init_table_1 ").val()
-    var b = $("#init_table_2 ").val()
-    var loc = $("#init_loc_table option:selected ").val()
-
-    
-    if (a == b)
-      alert("A BLOCK CANNOT BE ON THE SAME BLOCK")
-
-    
-    else if (init_on[a])
-      alert("You cannot keep BLOCK(" + a + ") on BLOCK(" + b + ") beacause it is on " + init_on[a])
-
-    
-    else if (init_top[b] != "clear")
-      alert("BLOCK(" + b + ") already has top  BLOCK(" + init_top[b] + ") you cannot insert BLOCK(" + a + ")")
-
-
-    
-    else if (init_loc[b] != loc && init_loc[b])
-      alert("You cannot place a BLOCK(" + a + ") on  BLOCK(" + b + ") which is at location " + init_loc[b] + " but you are in location " + loc)
-
-    else if (!(init_loc[b]))
-      alert("First enter BLOCK(" + b + ") on table ")
-
-
-
-    
-
-    else {
-      init_on[a] = b
-      init_loc[a] = loc
-      init_top[b] = a
-      init_slots[loc-1].push(a)
-      $("#init_loc" + loc).append("<span style='padding-left:20%;font-weight:normal'>ON(" + a + " , " + b + ")</span><br><br>")
-    }
-
-
-  });
-
-  $("#final_on_click").click(function () {
-    var a = $("#final_table_1 ").val()
-    var b = $("#final_table_2 ").val()
-    var loc = $("#final_loc_table option:selected ").val()
-    
-    if (a == b)
-      alert("A BLOCK CANNOT BE ON THE SAME BLOCK")    
-    else if (final_on[a])
-      alert("You cannot keep BLOCK(" + a + ") on BLOCK(" + b + ") beacause it is on " + final_on[a])    
-    else if (final_top[b] != "clear")
-      alert("BLOCK(" + b + ") already has top  BLOCK(" + final_top[b] + ") you cannot insert BLOCK(" + a + ")")
-    else if (final_loc[b] != loc && final_loc[b]) {
-      alert("You cannot place a BLOCK(" + a + ") on  BLOCK(" + b + ") which is at location " + final_loc[b] + " but you are in location " + loc)
-    }
-    else if (!(final_loc[b]))
-      alert("First enter BLOCK(" + b + ") on table ")    
-    else {
-      final_on[a] = b
-      final_loc[a] = loc
-      final_top[b] = a
-      final_slots[loc-1].push(a)
-      $("#final_loc" + loc).append("<span style='padding-left:20%;font-weight:normal'>ON(" + a + " , " + b + ")</span><br><br>")
-    }
-  });
-
   function check_incomplete_information(init_on, final_on) {
     init_incomp = [], final_incomp = []
-    console.group("init : ")
-    console.log(init_on)
-    console.log(init_loc)
-    console.log(init_top)
-    console.groupEnd()
-    console.group("final: ")
-    console.log(final_on)
-    console.log(final_loc)
-    console.log(final_top)
-    console.groupEnd()
+    // console.group("init : ")
+    // console.log(init_on)
+    // console.log(init_loc)
+    // console.log(init_top)
+    // console.groupEnd()
+    // console.group("final: ")
+    // console.log(final_on)
+    // console.log(final_loc)
+    // console.log(final_top)
+    // console.groupEnd()
     Object.keys(init_on).forEach(function (key) {
       if (!(init_on[key]))
         init_incomp.push(key)
     });
-
-
     Object.keys(final_on).forEach(function (key) {
       if (!(final_on[key]))
         final_incomp.push(key)
     });
-
     if ((final_incomp.length) || (init_incomp.length))
       return true
     else
       return false
-
   }
 
-
-
-  
   $("#results_click").click(function (event) {
     event.preventDefault()
     console.log(init_slots)
@@ -345,7 +159,6 @@ $(document).ready(function () {
       return res
     }
 
-
     function unstack(block1, block2) {
       plan_show.push('$(".keepinfo").html("UNSTACKING ' + block1 + ' FROM ' + block2 + '")');      
       init_on[block1] = "air"
@@ -362,7 +175,6 @@ $(document).ready(function () {
       init_top[block1] = "air"      
       return res
     }
-
 
     function putdown(block, location) {
       plan_show.push('$(".keepinfo").html("PUTDOWN ' + block + ' AT LOCATION ' + location + '")');
@@ -390,58 +202,39 @@ $(document).ready(function () {
         }
       });
     }
-
     
     function initiate_to_plan(key) {      
       if (final_on[key] == init_on[key] && final_loc[key] == init_loc[key])
         console.log(":-)")
-      
       else
         actual_plan(key, final_loc[key], final_on[key])
-
       if (final_top[key] == "clear")
         return;
-
       initiate_to_plan(final_top[key])
     }
 
-
-
-
     function actual_plan(block, final_location, final_position) {
-
-      
-      if (final_position == "table") {
-        
-        if (init_on[block] == "table") {
-
-          
+      if (final_position == "table") {        
+        if (init_on[block] == "table") {          
           if (init_top[block] == "clear") {
-            var ob = get_object_from_table_at_location(final_location)
-
-            
+            var ob = get_object_from_table_at_location(final_location)            
             if (!(ob)) {
               var pos = init_loc[block]
-
               pickup(block)
-              putdown(block, final_location)
-              
+              putdown(block, final_location)              
               plan_result.push("moveArmTo('" + pos + "')", "pickup('" + block + "')", "moveArmTo('" + final_location + "')", "putdown('" + block + "','" + final_location + "')")
+              // getLatestLocationsArray()
             }
-
             else {
               remove_block_and_its_items(ob, init_on[ob], init_loc[block], final_location, final_position)
               actual_plan(block, final_location, final_position)
             }
           } 
-
           else {
-
             remove_block_and_its_items(init_top[block], block, init_loc[block], final_location, final_position)
             actual_plan(block, final_location, final_position)
           }
-        } 
-
+        }
         else {          
           if (init_top[block] == "clear") {
             var ob = get_object_from_table_at_location(final_location)
@@ -450,6 +243,7 @@ $(document).ready(function () {
               unstack(block, init_on[block])
               putdown(block, final_location)
               plan_result.push("moveArmTo('" + pos + "')", "unstack('" + block + "','" + init_on[block] + "')", "moveArmTo('" + final_location + "')", "putdown('" + block + "'," + final_location + ")")
+              // getLatestLocationsArray()
             }
             else {              
               remove_block_and_its_items(ob, init_on[ob], init_loc[block], final_location, final_position)
@@ -469,7 +263,8 @@ $(document).ready(function () {
               var pos = init_loc[block]
               pickup(block, init_on[block])
               stack(block, final_position)
-              plan_result.push("moveArmTo('" + pos + "')", "pickup('" + block + "')", "moveArmTo('" + init_loc[final_position] + "')", "stack('" + block + "','" + final_position + "')")
+              plan_result.push("moveArmTo('" + pos + "')", "pickup('" + block + "')", "moveArmTo('" + init_loc[final_position] + "')", "stack('" + block + "', '" + final_position + "')")
+              // getLatestLocationsArray()
             }
             else {
               remove_block_and_its_items(init_top[final_position], final_position, init_loc[block], final_location, final_position)
@@ -488,8 +283,10 @@ $(document).ready(function () {
               move(block, init_on[block], final_position)
               if (loc == "table") {
                 plan_result.push("moveArmTo('" + pos + "')", "pickup('" + block + "')", "moveArmTo('" + init_loc[final_position] + "')", "stack('" + block + "', '" + final_position + "')")
+                // getLatestLocationsArray()
               } else {
                 plan_result.push("moveArmTo('" + pos + "')", "unstack('" + block + "' , '" + init_on[block] + "')", "moveArmTo('" + init_loc[final_position] + "')", "stack('" + block + "', '" + final_position + "')")
+                // getLatestLocationsArray()
               }
             }
             else {
@@ -531,12 +328,14 @@ $(document).ready(function () {
             pickup(ob)
             putdown(ob, location)
             plan_result.push("moveArmTo('" + pos + "')", "pickup('" + ob + "')", "moveArmTo('" + location + "')", "putdown('" + ob + "')")
+            // getLatestLocationsArray()
           }
           else {            
             var pos = init_loc[ob]
             pickup(ob)
             stack(ob, key)
-            plan_result.push("moveArmTo('" + pos + "')", "pickup('" + ob + "')", "moveArmTo('" + init_loc[key] + "')", "stack('" + ob + "','" + key + "')")
+            plan_result.push("moveArmTo('" + pos + "')", "pickup('" + ob + "')", "moveArmTo('" + init_loc[key] + "')", "stack('" + ob + "', '" + key + "')")
+            // getLatestLocationsArray()
           }
           return;
         }
@@ -546,6 +345,7 @@ $(document).ready(function () {
             unstack(ob, position_block)
             putdown(ob, location)
             plan_result.push("moveArmTo('" + pos + "')", "unstack('" + ob + "','" + position_block + "')", "moveArmTo('" + location + "')", "putdown('" + ob + "'," + location + ")")
+            // getLatestLocationsArray()
           }
           else {
             var pos = init_loc[ob]
@@ -553,9 +353,12 @@ $(document).ready(function () {
             move(ob, position_block, key)
             if (loc == "table") {
               plan_result.push("moveArmTo('" + pos + "')", "pickup('" + ob + "')", "moveArmTo('" + init_loc[key] + "')", "stack('" + ob + "', '" + key + "')")
+              // getLatestLocationsArray()
             }
             else {
               plan_result.push("moveArmTo('" + pos + "')", "unstack('" + ob + "' , '" + position_block + "')", "moveArmTo('" + init_loc[key] + "')", "stack('" + ob + "', '" + key + "')")
+              // getLatestLocationsArray()
+              // displayArray()
             }
           }
         }
@@ -602,10 +405,7 @@ $(document).ready(function () {
       for (var i = 1; i <= 4; i++)
         if (i != initial_location && i != final_location)
           temp.push(i)
-
-
       var min = Math.min(loc[temp[0]].length, loc[temp[1]].length)
-
       if (min == loc[temp[0]].length)
         return temp[0]
       else
@@ -617,14 +417,61 @@ $(document).ready(function () {
       return (d < 10) ? '0' + d.toString() : d.toString();
     }
 
+    var states = []
+    var slots_in_state = init_slots.slice()    
+
     for(var i = 0; i < plan_result.length; i++) {
-      $("#results").append("<h4>" + plan_result[i] + "</h4>");
+      if(plan_result[i].indexOf("stack") === 0 || plan_result[i].indexOf("putdown") !== -1) {
+        states.push(plan_result[i]);
+      }
     }
+
+    console.log(states);
+
+    // Function to display state in a div by appending to #results
+    function displayState() {
+      for(var i = 0; i < slots_in_state.length; i++) {
+        $("#results").append("<span class='location'>L" + (i + 1) + "</span>")
+        for(var j = 0; j < slots_in_state[i].length; j++) {
+          $("#results").append("<span>" + slots_in_state[i][j] + "</span>");
+        }
+        $("#results").append("<br>");
+      }
+      $("#results").append("<br>");
+    }
+
+    // Function to pop and push when stack or pickup is called
+    //getLocationOf(label, ref)
+    function updateSlotsInState(action) {
+      if(action.indexOf("stack") !== -1) {
+        var block_to_stack = action.substring(7, 8);
+        var block_to_get_stacked_on = action.substring(12 ,13);
+        var location_of_block_to_stack = getLocationOf(block_to_stack, slots_in_state).slot - 1;
+        var location_of_block_to_get_stacked_on = getLocationOf(block_to_get_stacked_on, slots_in_state).slot - 1;
+        slots_in_state[location_of_block_to_stack].pop();
+        slots_in_state[location_of_block_to_get_stacked_on].push(block_to_stack);
+      } else if(action.indexOf("putdown") !== -1) {
+        var block_to_stack = action.substring(9, 10);
+        var location_of_block_to_stack = getLocationOf(block_to_stack, slots_in_state).slot - 1;
+        var location_of_block_to_get_stacked_on = action.substring(12, 13);
+        slots_in_state[location_of_block_to_stack].pop();
+        slots_in_state[location_of_block_to_get_stacked_on].push(block_to_stack);
+      }
+      else {
+        // Do nothing if action doesn't match
+      }
+    }
+
+    for(var i = 0; i < states.length; i++) {
+      updateSlotsInState(states[i]);
+      displayState()
+    }
+
   }); 
 });
 
-$(document).ready(function() {
-  $("#present").on('click', function() {
-    $("#presentation").show();
-  });
-});
+// $(document).ready(function() {
+//   $("#present").on('click', function() {
+//     $("#presentation").show();
+//   });
+// });
