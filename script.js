@@ -242,7 +242,7 @@ $(document).ready(function () {
               var pos = init_loc[block]
               unstack(block, init_on[block])
               putdown(block, final_location)
-              plan_result.push("moveArmTo('" + pos + "')", "unstack('" + block + "','" + init_on[block] + "')", "moveArmTo('" + final_location + "')", "putdown('" + block + "'," + final_location + ")")
+              plan_result.push("moveArmTo('" + pos + "')", "unstack('" + block + "','" + init_on[block] + "')", "moveArmTo('" + final_location + "')", "putdown('" + block + "','" + final_location + "')")
               // getLatestLocationsArray()
             }
             else {              
@@ -327,7 +327,7 @@ $(document).ready(function () {
             var pos = init_loc[ob]
             pickup(ob)
             putdown(ob, location)
-            plan_result.push("moveArmTo('" + pos + "')", "pickup('" + ob + "')", "moveArmTo('" + location + "')", "putdown('" + ob + "')")
+            plan_result.push("moveArmTo('" + pos + "')", "pickup('" + ob + "')", "moveArmTo('" + location + "')", "putdown('" + ob + "','" + location + "')")
             // getLatestLocationsArray()
           }
           else {            
@@ -344,7 +344,7 @@ $(document).ready(function () {
             var pos = init_loc[ob]
             unstack(ob, position_block)
             putdown(ob, location)
-            plan_result.push("moveArmTo('" + pos + "')", "unstack('" + ob + "','" + position_block + "')", "moveArmTo('" + location + "')", "putdown('" + ob + "'," + location + ")")
+            plan_result.push("moveArmTo('" + pos + "')", "unstack('" + ob + "','" + position_block + "')", "moveArmTo('" + location + "')", "putdown('" + ob + "','" + location + "')")
             // getLatestLocationsArray()
           }
           else {
@@ -453,7 +453,7 @@ $(document).ready(function () {
       } else if(action.indexOf("putdown") !== -1) {
         var block_to_stack = action.substring(9, 10);
         var location_of_block_to_stack = getLocationOf(block_to_stack, slots_in_state).slot - 1;
-        var location_of_block_to_get_stacked_on = action.substring(12, 13);
+        var location_of_block_to_get_stacked_on = action.substring(13, 14);
         slots_in_state[location_of_block_to_stack].pop();
         slots_in_state[location_of_block_to_get_stacked_on].push(block_to_stack);
       }
