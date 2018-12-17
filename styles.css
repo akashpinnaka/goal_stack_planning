@@ -57,7 +57,7 @@ button {
 #results {
 	background-color: #f7f4f6;
 	padding: 1em 2em;
-	width: 70%;
+	width: 90%;
 	height: 90vh;
 	margin: auto;
 	overflow-y: auto;
@@ -75,4 +75,18 @@ button {
 	width: 100%;
 	top: 0;
 	display: none;
+}
+
+span.block, span.location {
+	background-color: #c64543;
+	color: #ffffff;
+	width: 40px;
+	display: inline-block;
+	text-align: center;
+	margin-right: 1em;
+	margin-bottom: .5em;
+}
+
+span.location {
+	background-color: #555555;
 }

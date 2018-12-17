@@ -433,7 +433,7 @@ $(document).ready(function () {
       for(var i = 0; i < slots_in_state.length; i++) {
         $("#results").append("<span class='location'>L" + (i + 1) + "</span>")
         for(var j = 0; j < slots_in_state[i].length; j++) {
-          $("#results").append("<span>" + slots_in_state[i][j] + "</span>");
+          $("#results").append("<span class='block'>" + slots_in_state[i][j] + "</span>");
         }
         $("#results").append("<br>");
       }
